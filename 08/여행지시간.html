@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>여행 카운트다운</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Arial', sans-serif;
+      background-color: #fff;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    #result {
+      font-size: 1.5em;
+      font-weight: bold;
+      color: red;
+      display: inline;
+    }
+
+    p {
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    .subtitle {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    #container {
+      padding: 20px 30px;
+      border: 1px solid #ccc;
+      border-radius: 16px;
+      background-color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    #today {
+      font-size: 1.2em;
+      margin-bottom: 10px;
+    }
+
+    #clock {
+      font-size: 1.1em;
+    }
+
+    span.bold {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>여행일까지</h1>
+  <p><span id="result"></span>일 남음</p>
+  <div class="subtitle">현재 미국 시간</div>
+
+  <div id="container">
+    <div id="today"></div>
+    <div id="clock"></div>
+  </div>
+
+  <script>
+    const displayDate = document.querySelector('#today');
+
+    function updateDate() {
+      const usTime = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+
+      const year = usTime.getFullYear();
+      const month = usTime.getMonth() + 1;
+      const date = usTime.getDate();
+      const day1 = usTime.getDay();
+
+      let day2 = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"][day1];
+
+      displayDate.innerHTML = `${year}년 ${month}월 ${date}일 <span style="font-weight:bold">${day2}</span>`;
+    }
+
+    const displayTime = document.querySelector("#clock");
+
+    function clock() {
+      const now = new Date();
+      const usTime = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
+
+      let hrs = usTime.getHours();
+      let mins = usTime.getMinutes();
+      let secs = usTime.getSeconds();
+
+      let period = "AM";
+      if (hrs === 0) {
+        hrs = 12;
+      } else if (hrs >= 12) {
+        period = "PM";
+        if (hrs > 12) hrs -= 12;
+      }
+
+      hrs = (hrs < 10) ? "0" + hrs : hrs;
+      mins = (mins < 10) ? "0" + mins : mins;
+      secs = (secs < 10) ? "0" + secs : secs;
+
+      displayTime.innerText = `${period} ${hrs} : ${mins} : ${secs}`;
+    }
+
+    const travelDate = new Date("2025-12-31T00:00:00+00:00");
+
+    function calcRemainingDays() {
+      const now = new Date(new Date().toLocaleString("en-US", { timeZone: "America/New_York" }));
+      const diff = travelDate.getTime() - now.getTime();
+      const daysLeft = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      return daysLeft;
+    }
+
+    const result = document.querySelector("#result");
+    result.innerText = calcRemainingDays();
+
+    updateDate();
+    clock();
+    setInterval(clock, 1000);
+  </script>
+</body>
+</html>
